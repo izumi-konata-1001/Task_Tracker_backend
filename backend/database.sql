@@ -1,0 +1,56 @@
+DROP TABLE IF EXISTS pomodoro_sessions;
+DROP TABLE IF EXISTS tasks;
+DROP TABLE IF EXISTS issues;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE issues (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE tasks (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  issue_id INT,
+  step_number INT,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  completed BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE,
+  CONSTRAINT step_required_if_issue CHECK (
+    issue_id IS NULL OR step_number IS NOT NULL
+  ),
+  UNIQUE (issue_id, step_number)
+);
+
+CREATE TABLE pomodoro_sessions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  task_id INT NOT NULL,
+  start_time DATETIME NOT NULL,
+  estimated_end_time DATETIME NOT NULL,
+  actual_end_time DATETIME,
+  duration_minutes INT NOT NULL,
+  break_point INT DEFAULT 0,
+  note TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
+);
