@@ -161,7 +161,7 @@ async function changeNote(req, res){
     const note = req.body.note;
 
     try{
-        const session= await pomodoroDao.getSessionBySession(sessionId);
+        const session= await pomodoroDao.getSessionBySessionId(sessionId);
         if(session.user_id != userId)
             return res.status(403).json({error:'Token invalid.'});
 
@@ -208,7 +208,7 @@ async function deleteSession(req, res){
     const userId = req.user.id;
     const sessionId = req.body.sessionId;
     try{
-        const session= await pomodoroDao.getSessionBySession(sessionId);
+        const session= await pomodoroDao.getSessionBySessionId(sessionId);
         if(session.user_id != userId)
             return res.status(403).json({error:'Token invalid.'});
 

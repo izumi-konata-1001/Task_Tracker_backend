@@ -20,7 +20,9 @@ async function getTaskByUserId(req, res) {
     }
 
     const total = await taskDao.countTasksByUserId(userId);
-
+    if(tasks.length < 1)
+        return res.status(404).json({error:'No task found.'});
+    
     return res.status(200).json({
       message: `Get tasks successfully, order: ${order}`,
       tasks: tasks,

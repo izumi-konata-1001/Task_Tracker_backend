@@ -74,9 +74,14 @@ async function deleteIssue(userId, issueId){
     return result.affectedRows > 0;
 }
 
-async function getIssuesIdWithTasksByUserId(userId){
+
+async function getIssuesIdWithIncompletedTasksByUserId(userId){
     const [rows] = await db.query(
-        `SELECT DISTINCT issue_id FROM tasks WHERE user_id = ? AND issue_id IS NOT NULL`,
+        `SELECT DISTINCT issue_id 
+         FROM tasks 
+         WHERE user_id = ? 
+         AND issue_id IS NOT NULL 
+         AND completed = 0`,
         [userId]
     );
 
@@ -148,7 +153,7 @@ module.exports={
     changeDescription,
     createIssue,
     deleteIssue,
-    getIssuesIdWithTasksByUserId,
+    getIssuesIdWithIncompletedTasksByUserId,
     getIssueNumberByUserId,
     getFullyCompletedIssueCountByUser,
     getIncompleteIssueCountByUser,

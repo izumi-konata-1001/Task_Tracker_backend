@@ -190,7 +190,7 @@ async function deleteIssue(req, res){
 async function getAllIssuesWithTaskByUserId(req, res){
     const userId = req.user.id;
     try{
-        const issueIds = await issueDao.getIssuesIdWithTasksByUserId(userId);
+        const issueIds = await issueDao.getIssuesIdWithIncompletedTasksByUserId(userId);
         if(!issueIds || issueIds.length === 0)
             return res.status(404).json({error:'No issue has task.'});
         let issues = [];
