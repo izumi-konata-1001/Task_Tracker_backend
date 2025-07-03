@@ -311,7 +311,7 @@ async function getAllIncompletedTasks(req,res){
     const userId = req.user.id;
     try{
         const tasks = await taskDao.getAllTasksNotCompleted(userId);
-        if(!tasks)
+        if(!tasks || tasks.length < 1)
             return res.status(404).json({error:'No task is not completed.'});
         return res.status(200).json({
             message:'Get all incompleted tasks successfully.',
